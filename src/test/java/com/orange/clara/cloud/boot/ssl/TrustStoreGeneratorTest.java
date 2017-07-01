@@ -16,6 +16,9 @@
 
 package com.orange.clara.cloud.boot.ssl;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -49,8 +52,11 @@ public class TrustStoreGeneratorTest {
     @Test
     public void should_generate_truststore() throws Exception {
 
+    	List<String> certs = new ArrayList<String>();
+    	certs.add(CERTIFICATE);
+    	
         DefaultTrustStoreAppender trustStoreAppender = new DefaultTrustStoreAppender();
-        final TrustStoreInfo trustStoreFile = trustStoreAppender.append(new CertificateFactory().newInstance(CERTIFICATE));
+        final TrustStoreInfo trustStoreFile = trustStoreAppender.append(certs);
 
         //there should be a truststore file
         Assert.assertNotNull(trustStoreFile.getTrustStorefFile());

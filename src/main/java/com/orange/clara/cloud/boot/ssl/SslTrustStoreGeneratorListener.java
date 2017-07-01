@@ -16,11 +16,17 @@
 
 package com.orange.clara.cloud.boot.ssl;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.commons.codec.binary.Base64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.context.event.ApplicationStartedEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.core.Ordered;
+
+import com.jayway.jsonpath.JsonPath;
 
 /**
  * Provide spring boot application with a java truststore composed from :
@@ -46,26 +52,27 @@ public class SslTrustStoreGeneratorListener implements
 
     private int order = HIGHEST_PRECEDENCE;
 
-    private PropertyResolver propertyResolver = new PropertyResolver();
-
-    private DefaultTrustStoreAppender trustStoreAppender = new DefaultTrustStoreAppender();
-
     public SslTrustStoreGeneratorListener() {
     }
 
     public void onApplicationEvent(ApplicationStartedEvent event) {
         try {
-            final String certificate = propertyResolver.getSystemProperty(TRUSTED_CA_CERTIFICATE_PROPERTY_NAME);
-            if (!"".equals(certificate)) {
-                LOGGER.info("Following additional CA Certificate has been defined in {} system property : {}", TRUSTED_CA_CERTIFICATE_PROPERTY_NAME, certificate);
-                final TrustStoreInfo trustStoreInfo = trustStoreAppender.append(CertificateFactory.newInstance(certificate));
-                System.setProperty(SSL_TRUST_STORE_SYSTEM_PROPERTY, trustStoreInfo.getTrustStorefFile().getAbsolutePath());
-                LOGGER.info("Setting {} system property to {}", SSL_TRUST_STORE_SYSTEM_PROPERTY, trustStoreInfo.getTrustStorefFile().getAbsolutePath());
-                System.setProperty(SSL_TRUST_STORE_PASSWORD_SYSTEM_PROPERTY, trustStoreInfo.getPassword());
-                LOGGER.info("Setting {} system property to {}", SSL_TRUST_STORE_PASSWORD_SYSTEM_PROPERTY, trustStoreInfo.getPassword());
-            } else {
-                LOGGER.warn("No additional CA certificate has been defined using {} system property", TRUSTED_CA_CERTIFICATE_PROPERTY_NAME);
-            }
+
+    		String VCAP_SERVICES = System.getenv("VCAP_SERVICES");
+        	
+        	List<String> base64certs = JsonPath.read(VCAP_SERVICES, "$..ca_certificate_base64");
+        	
+        	List<String> certs = new ArrayList<String>();
+        	for (String base64cert : base64certs) {
+        		certs.add(new String(Base64.decodeBase64(base64cert)));
+        	}
+        	
+        	DefaultTrustStoreAppender trustStoreAppender = new DefaultTrustStoreAppender();
+    	    final TrustStoreInfo trustStoreInfo = trustStoreAppender.append(certs);
+    	    System.out.println(trustStoreInfo.getTrustStorefFile().getAbsolutePath());
+        	System.setProperty(SSL_TRUST_STORE_SYSTEM_PROPERTY, trustStoreInfo.getTrustStorefFile().getAbsolutePath());
+    	    System.setProperty(SSL_TRUST_STORE_PASSWORD_SYSTEM_PROPERTY, trustStoreInfo.getPassword());	
+        	
         } catch (Exception e) {
             String message = "Cannot create truststore.";
             LOGGER.error(message);

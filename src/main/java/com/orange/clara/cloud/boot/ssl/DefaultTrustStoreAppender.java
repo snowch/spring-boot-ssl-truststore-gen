@@ -28,6 +28,7 @@ import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.Certificate;
 import java.security.cert.X509Certificate;
+import java.util.List;
 import java.util.UUID;
 
 
@@ -49,7 +50,7 @@ public class DefaultTrustStoreAppender {
      * @return TrustStoreInfo
      * @see <a href="https://docs.oracle.com/javase/8/docs/technotes/guides/security/jsse/JSSERefGuide.html">JSSE Reference Guide</a>
      */
-    public TrustStoreInfo append(Certificate certificate) {
+    public TrustStoreInfo append(List<String> certificates) {
         try {
             X509TrustManager trustManager = getDefaultTrustManager();
 
@@ -64,9 +65,12 @@ public class DefaultTrustStoreAppender {
                     }
                 }
 
-                if (certificate != null) {
-                    trustStore.setCertificateEntry(UUID.randomUUID().toString(), certificate);
-                    LOGGER.debug("adding new certificate to truststore {}", certificate);
+                if (certificates.size() > 0) {
+                	for (String certificate : certificates) {
+                		Certificate cert = CertificateFactory.newInstance(certificate);
+	                    trustStore.setCertificateEntry(UUID.randomUUID().toString(), cert);
+	                    LOGGER.debug("adding new certificate to truststore {}", cert);
+                	}
                 }
 
                 String password = UUID.randomUUID().toString();
