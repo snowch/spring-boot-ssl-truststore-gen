@@ -42,7 +42,7 @@ If the certificates are not automatically loaded for you, try running manually.
 
 ## Manually running
 
-Add the maven dependency:
+if you are not running spring boot, add the maven dependency:
 
 ```
 <repository>
@@ -57,7 +57,7 @@ Add the maven dependency:
 </dependency>
 ```
 
-Add the following code to your application, preferably somewhere early in it's startup:
+Next add the following code to an existing class in your application:
 
 ```
 import static com.orange.clara.cloud.boot.ssl.SslTrustStoreGeneratorListener
