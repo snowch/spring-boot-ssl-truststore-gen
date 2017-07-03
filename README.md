@@ -67,4 +67,7 @@ static {
 }
 ```
 
+## Credits
+
+This library builds on https://github.com/orange-cloudfoundry/spring-boot-ssl-truststore-gen
 
