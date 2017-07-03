@@ -56,8 +56,11 @@ public class SslTrustStoreGeneratorListener implements
     }
 
     public void onApplicationEvent(ApplicationStartedEvent event) {
-        try {
+    	SslTrustStoreGeneratorListener.importComposeCertificates();
+    }
 
+	public static void importComposeCertificates() {
+		try {
     		String VCAP_SERVICES = System.getenv("VCAP_SERVICES");
         	
         	List<String> base64certs = JsonPath.read(VCAP_SERVICES, "$..ca_certificate_base64");
@@ -79,8 +82,7 @@ public class SslTrustStoreGeneratorListener implements
             throw new IllegalStateException(message, e);
         }
         LOGGER.info("truststore generated");
-
-    }
+	}
 
     public int getOrder() {
         return order;
@@ -95,7 +97,6 @@ public class SslTrustStoreGeneratorListener implements
             return keystore;
         }
     }
-
 }
 
 
