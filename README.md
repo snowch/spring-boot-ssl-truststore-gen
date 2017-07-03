@@ -38,3 +38,33 @@ Example for maven
 </dependency>
 ```
 
+If the certificates are not automatically loaded for you, try running manually.
+
+## Manually running
+
+Add the maven dependency:
+
+```
+<repository>
+   <id>jitpack.io</id>
+   <url>https://jitpack.io</url>
+</repository>
+		
+<dependency>
+   <groupId>com.github.snowch</groupId>
+   <artifactId>spring-boot-ssl-truststore-gen</artifactId>
+   <version>master</version>
+</dependency>
+```
+
+Add the following code to your application, preferably somewhere early in it's startup:
+
+```
+import static com.orange.clara.cloud.boot.ssl.SslTrustStoreGeneratorListener
+...
+static {
+    SslTrustStoreGeneratorListener.importComposeCertificates()
+}
+```
+
+
