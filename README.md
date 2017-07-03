@@ -1,13 +1,9 @@
-# spring-boot-ssl-truststore-gen [![Build Status](https://travis-ci.org/Orange-OpenSource/spring-boot-ssl-truststore-gen.svg?branch=master)](https://travis-ci.org/Orange-OpenSource/spring-boot-ssl-truststore-gen)
-
-
 ## Feature
 
-Provides spring boot application with a [java SSL truststore](https://docs.oracle.com/javase/8/docs/technotes/guides/security/jsse/JSSERefGuide.html#CustomizingStores) made up of :
- * default truststore CA certificates
- * additional CA certificate extracted from a custom <i>TRUSTED_CA_CERTIFICATE_VALUE</i> System property
+This library updates the certificates on java cloud foundry buildpacks.
 
-The [java SSL truststore](https://docs.oracle.com/javase/8/docs/technotes/guides/security/jsse/JSSERefGuide.html#CustomizingStores) will be accessible through <i>javax.net.ssl.trustStore</i> and <i>javax.net.ssl.trustStorePassword</i> system properties.
+ * Default truststore CA certificates
+ * Compose certificates provided in VCAP_SERVICES in the field ca_certificate_base64 
 
 ## Details
 
@@ -15,7 +11,7 @@ spring-boot-ssl-truststore-gen will register a [spring boot event listener](http
 
 ## Building
 
-To build the source you will need to install JDK 1.8.
+To build the source you will need to install JDK 1.7+
 
 spring-boot-ssl-truststore-gen uses Maven
 
@@ -30,15 +26,15 @@ To enable automatic truststore generation, all you need is to add spring-boot-ss
 Example for maven
 
 ```
-		<repository>
-		    <id>jitpack.io</id>
-		    <url>https://jitpack.io</url>
-		</repository>
+<repository>
+   <id>jitpack.io</id>
+   <url>https://jitpack.io</url>
+</repository>
 		
-		<dependency>
-		    <groupId>com.github.snowch</groupId>
-		    <artifactId>spring-boot-ssl-truststore-gen</artifactId>
-		    <version>master</version>
-		</dependency>
+<dependency>
+   <groupId>com.github.snowch</groupId>
+   <artifactId>spring-boot-ssl-truststore-gen</artifactId>
+   <version>master</version>
+</dependency>
 ```
 
