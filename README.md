@@ -1,6 +1,6 @@
 ## Feature
 
-This library updates the certificates on java cloud foundry buildpacks.
+This library updates the certificates on java cloud foundry buildpacks with:
 
  * Default truststore CA certificates
  * Compose certificates provided in VCAP_SERVICES in the field ca_certificate_base64 
